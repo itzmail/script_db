@@ -94,5 +94,62 @@ update product
 set brand_id = 2
 where product.product_name like '% Biru %';
 
-select * from product;
+select product_id, product_name, brand_name, price from product
+inner join brand on product.brand_id = brand.brand_id
+where brand.brand_name = 'imaco'
+order by product.price > 100000;
 
+-- Belajar Many to Many
+
+create table mahasiswa(
+	student_id INT AUTO_INCREMENT PRIMARY KEY,
+	student_name VARCHAR(255)
+);
+
+create table mata_kuliah(
+	course_id INT AUTO_INCREMENT PRIMARY KEY,
+	course_name VARCHAR(225)
+);
+
+create table mahasiswa_mata_kuliah(
+	enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
+	student_id INT,
+	course_id INT,
+	FOREIGN KEY (student_id) REFERENCES mahasiswa(student_id),
+	FOREIGN KEY (course_id) REFERENCES mata_kuliah(course_id)
+);
+
+
+desc mahasiswa_mata_kuliah;
+
+select * from mahasiswa;
+
+select * from mata_kuliah;
+
+select * from mahasiswa_mata_kuliah;
+
+insert into mahasiswa (student_name)
+values 	("Raditya Cahyadi"),
+		("Dika Raditya");
+		
+insert into mata_kuliah (course_name)
+values 	("Sistem Informasi"),
+		("Kalkulus 1"),
+		("Pengantar Matematika");
+		
+insert into mahasiswa_mata_kuliah (student_id, course_id)
+values	(1, 2),
+		(3, 1),
+		(2, 3),
+		(1, 1),
+		(1, 3);
+		
+-- Contoh SQL: Menampilkan daftar mahasiswa dan mata kuliah yang mereka ambil.
+select student_name, course_name from mahasiswa
+inner join mahasiswa_mata_kuliah on mahasiswa.student_id = mahasiswa_mata_kuliah.student_id
+inner join mata_kuliah on mahasiswa_mata_kuliah.course_id = mata_kuliah.course_id;
+
+-- Contoh SQL: Menampilkan mahasiswa dan jumlah mata kuliah yang mereka ambil.
+select mahasiswa.student_name, COUNT(mahasiswa_mata_kuliah.enrollment_id) from mahasiswa
+left join mahasiswa_mata_kuliah on mahasiswa.student_id = mahasiswa_mata_kuliah.student_id
+group by mahasiswa.student_name;
